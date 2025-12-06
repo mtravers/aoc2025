@@ -46,6 +46,6 @@
       (+ (count removes)
          (p2 (au/rset* grid removes \.))))))
 
-;;; au/r... fns don;t work on vectors of strings, so need to convertn
+;;; Some au/r... fns don't work on vectors of strings, so need to convertn
 (comment
   (p2 (mapv vec data)))
