@@ -56,14 +56,12 @@
 
 (defn delete-element
   [seq elt]
-  (u/remove= elt seq))
+  (vec (u/remove= elt seq)))
 
-;;; TODO no this won't work, new range has to be added in
 (defn add-range
   [com-ranges [r0 r1 :as r]]
   (let [[s0 s1 :as s] (u/some-thing (fn [[s0 s1]] (<= r0 s1)) com-ranges)]
     ;; s1 > r0
-    (prn :r r :s s)
     (cond
 
       (nil? s)                          ;no s found, tack onto end
@@ -71,8 +69,11 @@
 
       ;; We know (< r0 s1)
 
+      (= r1 s0)
+      (add-range (delete-element com-ranges s) [r0 s1])
+
       ;; non-overlapping so insert new one (A)
-      (<= r1 s0)                         ; (< r0 r1 s0 s1)
+      (< r1 s0)                         ; (<= r0 r1 s0 s1)
       (vec (u/insert-before com-ranges r s))
 
       ;; overlapping (B)
@@ -92,7 +93,6 @@
       
       :else
       (throw (ex-info "foo" {:s s :r r}))
-
 
       )))
 
@@ -123,6 +123,13 @@
 
   (tc (add-range [[10 20] [30 40]] [15 35])
       [[10 40]])                        ;Way to go on this one
+
+  ;; Now for the fenceposts
+  (tc (add-range [[0 5] [10 20]] [5 7])
+      [[0 7] [10 20]])
+
+  (tc (add-range [[0 5] [10 20]] [7 10])
+      [[0 5] [7 20]])
   )
 
 
@@ -137,7 +144,6 @@
             com-ranges
             (recur (add-range com-ranges (first ranges))
                    (rest ranges))))]
-    (prn :com-ranges com-ranges)
     (reduce +
             (map (fn [[r0 r1]] (inc (- r1 r0)))
                  com-ranges))))
