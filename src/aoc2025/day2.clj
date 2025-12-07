@@ -11,7 +11,6 @@
   (map (fn [p] (mapv u/coerce-numeric (str/split p #"-")))
        (str/split raw-input #",")))
 
-;;; TODO → multitool
 ;;; Longs go up to 10^18
 (defn pow10
   [i]
@@ -110,7 +109,7 @@
 
 ;;; Brute forcing works
 
-;;; TODO → Multitool
+;;; Now in Multitool
 (defn divisors
   [n]
   (filter (partial mu/divides? n) (range 1 n)))
