@@ -84,7 +84,7 @@
             (if (= \^ (get new i))
               (-> nstate
                   (update-if (dec i) + (get state i))
-                  (assoc-if i 0)
+                  (assoc i 0)
                   (update-if (inc i) + (get state i)))
               nstate))
           state
@@ -92,8 +92,7 @@
 
 (defn p2
   [data]
-  (let [end
-        (reduce propagate2 
-                (mapv #(if (= % \S) 1 0) (first data))
-                (vec (rest data)))]
-    (reduce + end)))
+  (->> (reduce propagate2 
+               (mapv #(if (= % \S) 1 0) (first data))
+               (vec (rest data)))
+       (reduce +)))
